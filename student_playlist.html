@@ -1,0 +1,361 @@
+<F3:include href="common/header_stu.html" />
+<div id="main" style="margin-top:40px;text-align:center;">
+	<div id="preview-panel" style="margin-left:auto;margin-right:auto;">
+		<div class="box" id="selected" {{@selected == 0 ? 'style="display:none;"' : 'style="margin-bottom:40px;"'}} >
+			<h3 align="center">Selected Tracks</h4>
+			<input type="hidden" name="selected_num" id="selected_num"  value="{{@selected_num}}" />
+			<table class="table table-striped" style="margin:auto; width:80%">
+				<thead>
+					<tr style="padding:3px">
+						<th style="text-align: center; width:20%;">Track Title</th>
+						<th style="text-align: center; width:20%;">Artist Name</th>
+						<th style="text-align: center; width:15%;">Year Released</th>
+						<th style="text-align: center; width:15%;">Est. Tempo (BPM)</th>
+						<th style="text-align: center; width:17%;">Preview</th>
+						<th style="text-align: center; width:13%;">Remove</th>
+					</tr>
+				</thead>
+			</table>
+			<div style="margin:auto; width:80%; overflow-y:auto;height:374px">
+				<table  id="selected_tracks" class="table table-striped" style="margin:auto;">
+				<tbody>
+				<F3:repeat group="{{@track_show}}" key="{{@i}}" value="{{@track_show}}" counter="{{@no}}">
+				<tr style="padding:3px">
+				<td style="text-align:center;padding:3px; width:20%;"> {{@track_show.track_name}} </td>
+				<td style="text-align:center;padding:3px; width:20%;"> {{@track_show.artist_name}} </td>
+				<td style="text-align:center;padding:3px; width:15%;"> {{@track_show.year}} </td>
+				<td style="text-align:center;padding:3px; width:15%;"> {{@track_show.tempo}} </td>
+				<td style="text-align:center;padding:3px; width:17%;"> 
+				<object type="application/x-shockwave-flash" data="{{@WEB_ROOT}}/static/dewplayer/dewplayer-mini.swf" width="160" height="20" id="dewplayer" name="dewplayer">
+				<param name="wmode" value="transparent" />
+				<param name="movie" value="{{@WEB_ROOT}}/static/dewplayer/dewplayer-mini.swf" />
+				<param name="flashvars" value="mp3=http://api.7digital.com/1.2/track/preview?trackid={{@track_show.track_7digital_id}}%26oauth_consumer_key=7d7gfxfrvze2&amp;volume=75" />
+				</object>
+				</td>
+				<td style="text-align:center;padding:3px; width:13%;">
+				<button id="{{@track_show.echonest_id}}" class="btn" type="button" onclick="delRow(this)">
+				<i class="icon-remove icon-white"></i>
+				</button>
+				</td>
+				</tr>
+				</F3:repeat>
+				</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="box" id="recommended">
+		<form id="form-save" action="{{@WEB_ROOT}}/student_save_tracks" method="post" onSubmit="return write_suitable();">
+			<h3 align="center" style="border-top:2px solid #ECC8C8">Recommended Tracks</h4>
+			<input type="hidden" name="student_id" id="student_id"  value={{@student_id}} />
+			<!--<input type="hidden" name="patient_id" id="patient_id"  value={{@patient_id}} />-->
+			<table id="recommended_tracks" class="table table-striped" style="margin:auto; width:80%">
+				<thead>
+					<tr style="padding:3px">
+						<th style="text-align: center; width:20%;">Track Title</th>
+						<th style="text-align: center; width:20%;">Artist Name</th>
+						<th style="text-align: center; width:15%;">Year Released</th>
+						<th style="text-align: center; width:17%;">Preview</th>
+						<th style="text-align: center; width:17%;">Suitable Track for Exercise</th>
+						<!--<th style="text-align: center;">Tempo Estimation</th>-->
+					</tr>
+				</thead>
+				<tbody style="max-height:450px;overflow:auto;">
+				<F3:repeat group="{{@filter_tracks}}" key="{{@i}}" value="{{@filter_tracks}}" counter="{{@no}}">
+				<tr style="padding:3px">
+				<td style="text-align:center;padding:3px width:20%;"> {{@filter_tracks.track_name}} </td>
+				<td style="text-align:center;padding:3px width:20%;"> {{@filter_tracks.artist_name}} </td>
+				<td style="text-align:center;padding:3px width:15%;"> {{@filter_tracks.year}} </td>
+				<td style="text-align:center;padding:3px width:17%;"> 
+				<object type="application/x-shockwave-flash" data="{{@WEB_ROOT}}/static/dewplayer/dewplayer-mini.swf" width="160" height="20" id="dewplayer" name="dewplayer">
+				<param name="wmode" value="transparent" />
+				<param name="movie" value="{{@WEB_ROOT}}/static/dewplayer/dewplayer-mini.swf" />
+				<param name="flashvars" value="mp3=http://api.7digital.com/1.2/track/preview?trackid={{@filter_tracks.track_7digital_id}}%26oauth_consumer_key=7d7gfxfrvze2&amp;volume=75" />
+				</object>
+				</td>
+				<td style="text-align:center;padding:3px;width:80px; width:17%;">
+				<div style="z-index:-1;margin-left:80px">
+				<label class="switch-light well" onclick="">
+				<input type="checkbox" id="{{@filter_tracks.echonest_id}}_suitable" name="{{@filter_tracks.echonest_id}}_suitable" checked>
+				<span><span style="width: 40px;">Yes</span>
+                <span style="width: 40px; margin-left:90px;">No</span></span>
+                <a class="btn btn-primary"></a>
+				</label>
+				</div>
+				<input type="hidden" id="{{@filter_tracks.echonest_id}}_choice" name="{{@filter_tracks.echonest_id}}_choice"  value="0" />
+				</td>
+				<!--<td style="text-align:center;padding:3px">
+				<a id="{{@filter_tracks.echonest_id}}_showtap-btn" class="btn btn-info" onclick="set_name(this)"><i class="icon-hand-up"></i> Tap</a>
+				</td>-->
+				<input type="hidden" id="{{@filter_tracks.echonest_id}}_tempo" name="{{@filter_tracks.echonest_id}}_tempo"  value="0"/>
+				</tr>
+				</F3:repeat>
+				
+				<F3:repeat group="{{@recommend_tracks}}" key="{{@i}}" value="{{@recommend_tracks}}" counter="{{@no}}">
+				<tr style="padding:3px">
+				<td style="text-align:center;padding:3px"> {{@recommend_tracks.track_name}} </td>
+				<td style="text-align:center;padding:3px"> {{@recommend_tracks.artist_name}} </td>
+				<td style="text-align:center;padding:3px"> {{@recommend_tracks.year}} </td>
+				<td style="text-align:center;padding:3px"> 
+				<object type="application/x-shockwave-flash" data="{{@WEB_ROOT}}/static/dewplayer/dewplayer-mini.swf" width="160" height="20" id="dewplayer" name="dewplayer">
+				<param name="wmode" value="transparent" />
+				<param name="movie" value="{{@WEB_ROOT}}/static/dewplayer/dewplayer-mini.swf" />
+				<param name="flashvars" value="mp3=http://api.7digital.com/1.2/track/preview?trackid={{@recommend_tracks.track_7digital_id}}%26oauth_consumer_key=7d7gfxfrvze2&amp;volume=75" />
+				</object>
+				</td>
+				<td style="text-align:center;padding:3px;width:80px;">
+				<div style="z-index:-1;margin-left:80px">
+				<label class="switch-light well" onclick="">
+				<input type="checkbox" id="{{@recommend_tracks.echonest_id}}_suitable" name="{{@recommend_tracks.echonest_id}}_suitable" checked>
+				<span><span style="width: 40px;">Yes</span>
+                <span style="width: 40px; margin-left:90px;">No</span></span>
+                <a class="btn btn-primary"></a>
+				</label>
+				</div>
+				<input type="hidden" id="{{@recommend_tracks.echonest_id}}_choice" name="{{@recommend_tracks.echonest_id}}_choice"  value="0" />
+				</td>
+				<!--<td style="text-align:center;padding:3px">
+				<a id="{{@recommend_tracks.echonest_id}}_showtap-btn" class="btn btn-info" onclick="set_name(this)"><i class="icon-hand-up"></i> Tap</a>
+				</td>-->
+				<input type="hidden" id="{{@recommend_tracks.echonest_id}}_tempo" name="{{@recommend_tracks.echonest_id}}_tempo"  value="0"/>
+				</tr>
+				</F3:repeat>
+				
+				<F3:repeat group="{{@filter_recommend_tracks}}" key="{{@i}}" value="{{@filter_recommend_tracks}}" counter="{{@no}}">
+				<tr style="padding:3px">
+				<td style="text-align:center;padding:3px"> {{@filter_recommend_tracks.track_name}} </td>
+				<td style="text-align:center;padding:3px"> {{@filter_recommend_tracks.artist_name}} </td>
+				<td style="text-align:center;padding:3px"> {{@filter_recommend_tracks.year}} </td>
+				<td style="text-align:center;padding:3px"> 
+				<object type="application/x-shockwave-flash" data="{{@WEB_ROOT}}/static/dewplayer/dewplayer-mini.swf" width="160" height="20" id="dewplayer" name="dewplayer">
+				<param name="wmode" value="transparent" />
+				<param name="movie" value="{{@WEB_ROOT}}/static/dewplayer/dewplayer-mini.swf" />
+				<param name="flashvars" value="mp3=http://api.7digital.com/1.2/track/preview?trackid={{@filter_recommend_tracks.track_7digital_id}}%26oauth_consumer_key=7d7gfxfrvze2&amp;volume=75" />
+				</object>
+				</td>
+				<td style="text-align:center;padding:3px;width: 80px;">
+				<div style="z-index:-1;margin-left:80px">
+				<label class="switch-light well" onclick="">
+				<input type="checkbox" id="{{@filter_recommend_tracks.echonest_id}}_suitable" name="{{@filter_recommend_tracks.echonest_id}}_suitable" checked>
+				<span><span style="width: 40px;">Yes</span>
+                <span style="width: 40px; margin-left:90px;">No</span></span>
+                <a class="btn btn-primary"></a>
+				</label>
+				</div>
+				<input type="hidden" id="{{@filter_recommend_tracks.echonest_id}}_choice" name="{{@filter_recommend_tracks.echonest_id}}_choice"  value="0"/>
+				</td>
+				<td style="text-align:center;padding:3px">
+				<a id="{{@filter_recommend_tracks.echonest_id}}_showtap-btn" class="btn btn-info" onclick="set_name(this)"><i class="icon-hand-up"></i> Tap</a>
+				<input type="hidden" id="{{@filter_recommend_tracks.echonest_id}}_tempo" name="{{@filter_recommend_tracks.echonest_id}}_tempo"  value="0"/>
+				</td>
+				</tr>
+				</F3:repeat>
+				
+				</tbody>
+			</table>
+			<input type="submit" class="btn" id="save" value="Save" style="margin-top:20px" />
+			<!--<input id="save" style="margin-top:20px" type="button" value="Save" onclick="javascript:{this.disabled=true;document.form-save.submit();}"/>-->
+		</form>
+		</div>
+	</div>
+</div>
+<div class="tap-div" style="display: none;">
+			<button type="button" class="btn tap-btn" onclick="tap(event);">
+				&gt; Tap Here &lt;
+			</button>
+			<div class="tap-info-div">
+				<label class="taps-label">Taps: <span class="taps-value">0</span></label>
+				<label class="tempo-label">Tempo: <span class="tempo-value">0</span> BPM</label>
+			</div>
+</div>
+<div class="container" style="margin-top:40px"><p align="center">Copyright &copy; Sound and Music Computing Lab, NUS</p></div>
+</div>
+<script>
+var tapNum = 0;
+var tapIntervals = [];
+var lastTapTime;
+pos=0;
+tempo=0;
+input_name="";
+$(".btn-info").clickover({
+				html:true,
+				placement:'right',
+				content:$(".tap-div").html(),
+				tip_id:'popover-id',
+				onShown: function(){
+				toggle_showtap_btn();
+				initialization();
+				},
+			onHidden: function(){
+				tapNum = 0;
+				tapIntervals = [];
+				toggle_showtap_btn();		
+			},
+  	});
+function initialization(){
+var tapNum = 0;
+var tapIntervals = [];
+var lastTapTime;
+pos=0;
+tempo=0;
+hidden_input="";
+}
+function set_name(obj){
+temp=obj.id;
+input_name=temp.substring(0,temp.indexOf("_"))+"_tempo";
+}
+function getRowObj(obj){
+var i = 0;
+while(obj.tagName.toLowerCase() != "tr"){
+obj = obj.parentNode;
+if(obj.tagName.toLowerCase() == "table")return null;
+}
+return obj;
+}
+function getRowNo(obj){
+var trObj = getRowObj(obj);
+var trArr = trObj.parentNode.children;
+for(var trNo= 0; trNo < trArr.length; trNo++){
+if(trObj == trObj.parentNode.children[trNo]){
+alert(trNo+1);
+}
+}
+}
+function delRow(obj){
+//console.log(obj.id);
+var tr = this.getRowObj(obj);
+if(tr != null){
+tr.parentNode.removeChild(tr);
+//update the database (tracks ) obj.id
+$.post("{{@WEB_ROOT}}/remove_student_track",
+    {
+		echonest_id: obj.id,
+		student_id:{{@student_id}}
+    },
+    function(data,status){
+    });
+	document.getElementById('selected_num').value -= 1;
+}else{
+throw new Error("the given object is not contained by the table");
+}
+}
+
+
+
+function write_suitable(){
+var num_recomm_song = 0;
+document.getElementById('save').disabled=true;
+checkbox=$("input:checkbox");
+for(i=0;i<checkbox.length;i++){
+temp=checkbox[i].name;
+console.log()
+input_name=temp.substring(0,temp.indexOf("_"))+"_choice";
+if($("#"+temp).is(':checked')){
+document.getElementById(input_name).value=0;
+}
+else{
+document.getElementById(input_name).value=1;
+num_recomm_song = num_recomm_song + 1;
+}
+}
+var selected_num=$("#selected_num").val();
+var total_num = num_recomm_song + parseInt(selected_num,10);
+if(total_num > 10){
+	alert("Please select 10 songs in total. Thank you!");
+	document.getElementById('save').disabled=false;
+	return false;
+}
+return true;
+}
+
+var html_show_showtap_btn = '<i class="icon-hand-up"></i> Tap';
+var html_hide_showtap_btn = '<i class="icon-hand-up"></i> Hide';
+function toggle_showtap_btn(){
+	//log('toggle_showtap_btn');
+	$("#showtap-btn").html($("#showtap-btn").html()==html_show_showtap_btn ? html_hide_showtap_btn : html_show_showtap_btn);
+	$("#showtap-btn").toggleClass("btn-info").toggleClass("btn-warning");
+}
+function setvalue_tempo_slider(v1, v2){
+	tempo_slider_change = 1;
+	if(typeof v2 == 'undefined'){
+		//only one value
+		if(v1-tempo_slider_min < tempo_range){
+			v1 = tempo_slider_min;
+			v2 = tempo_slider_min + tempo_range;
+		}
+		else if(tempo_slider_max - v1 < tempo_range){
+			v1 = tempo_slider_max - tempo_range;
+			v2 = tempo_slider_max;
+		}
+		else{
+			v2 = v1 + tempo_range/2;
+			v1 -= tempo_range/2;
+		}
+	}
+	$tempo_slider.slider({ values: [v1, v2] });
+}
+
+function tap(e){
+	e.preventDefault();
+
+	var tapTime = new Date().getTime();
+	tapNum++;
+	$("#popover-id").find(".taps-value").text(tapNum);
+
+	if(tapNum >= 2){
+	//console.log();
+		tapIntervals.push(tapTime - lastTapTime);
+		tempo = computeTempo(tapIntervals);
+		$("#popover-id").find(".tempo-value").text(tempo.toFixed(1));
+		
+		document.getElementById(input_name).value=tempo.toFixed(1);
+		//$tempo.addClass("user-sel");
+		//var showtempo = Math.min(Math.max(tempo, tempo_slider_min), tempo_slider_max);
+		//$tempo.val(showtempo.toFixed(1));
+		
+		//setvalue_tempo_slider(tempo);
+	}
+	if(tapNum == 2){
+		$("#popover-id").find(".tempo-label").css('display','inline');
+	}
+	lastTapTime = tapTime;
+}
+
+
+function computeTempo(intervals){
+	return 60 * 1000 / median(intervals);
+}
+
+function median(values) {
+    values.sort( function(a,b) {return a - b;} );
+    var half = Math.floor(values.length/2);
+    if(values.length % 2)
+        return values[half];
+    else
+        return (values[half-1] + values[half]) / 2.0;
+}
+
+
+function duration_number(txt_id, type, num){ 
+        num = num || 1; 
+        var txt = document.getElementById(txt_id); 
+        var source_num = parseFloat(txt.value); 
+        if(source_num == 0.5 && type == '-') 
+        { 
+        alert('Please select a value of 0.5 or more'); 
+        return; 
+        } 
+        var to_num = source_num; 
+        if(type == '+') 
+        { 
+        to_num += num; 
+        } 
+        else if(type == '-') 
+        { 
+        to_num -= num; 
+        } 
+        
+        txt.value = to_num;  
+}
+
+</script>
+<F3:include href="common/footer.html" />

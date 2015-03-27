@@ -1,0 +1,207 @@
+<F3:include href="common/header_stu.html" />
+<div style="margin-top:40px">
+<!--
+<form action="{{@WEB_ROOT}}/save_assessment" method="post" class="basic-grey">
+-->
+<!-- Jiakun: check required info --> 
+<form name="assessment_form" id="assessment_form" action="{{@WEB_ROOT}}/save_student_assessment" method="post" onSubmit="return submit_check();" class="basic-grey">
+	<input type="hidden" name="name" value="{{name}}">
+    <h1>Music for Exercise Assessment
+        <span>Please fill all the texts in the fields.</span>
+		<span>Id : {{@name}}</span>
+		<input type="hidden" id="name" name="name" placeholder="" class="long-text" value="{{@name}}"/>
+    </h1>
+    <!--<label>
+        <span>Id : {{@name}}</span>
+        <input type="text" id="name" name="name" placeholder="" class="long-text" value="{{@student.name}}"/>
+    </label>
+	
+	<br>-->
+<!-- --------------------------------------------------------------------------------------------------- -->
+    <h2><br>Background Information
+    </h2>
+		How old are you?
+		<br>
+		<input type="text" id="age" name="age" placeholder="20" class="long-text" value="{{@student.age}}"/>
+	<br>
+	<br>
+		How many sessions of continuous physical activity, lasting for at least 30 minutes, do you perform in an average week?
+		<br>
+		<input type="text" id="session_30min" name="session_30min" placeholder="10" class="long-text" value="{{@student.session_30min}}"/>
+	<br>
+	<br>
+		How many sessions of continuous physical activity, lasting for at least 60 minutes, do you perform in an average week?
+		<br>
+		<input type="text" id="session_60min" name="session_60min" placeholder="10" class="long-text" value="{{@student.session_60min}}"/>
+	<br>
+	<br>
+		About how many minutes of physical activity or exercise do you perform in an average week?
+		<br>
+		<input type="text" id="exercisetime" name="exercisetime" placeholder="900" class="long-text" value="{{@student.exercisetime}}"/>
+	<br>
+	<br>
+		What is your exercise tempo?
+		<br>
+		<input type="text" id="exercisetempo" name="exercisetempo" placeholder="120" class="long-text" value="{{@student.exercisetempo}}"/>
+		<a id="{{@filter_recommend_tracks.echonest_id}}_showtap-btn" class="btn btn-info" onclick="set_name(this)"><i class="icon-hand-up"></i> Tap</a>
+	<br>
+	<br>
+	
+<!-- --------------------------------------------------------------------------------------------------- -->	
+    <h2><br>General Music Preferences
+    </h2>
+	<table cellpadding="7">
+			<tr><td>How loud do you like your exercise music?</td><td> (Very quiet) </td>
+			<td>
+			<input {{@student.loudness == '1' ? 'checked' : ''}} class="star required" type="radio" name="loudness"  value="1" />
+			<input {{@student.loudness == '2' ? 'checked' : ''}} class="star required" type="radio" name="loudness"  value="2" />
+			<input {{@student.loudness == '3' ? 'checked' : ''}} class="star required" type="radio" name="loudness"  value="3" />
+			<input {{@student.loudness == '4' ? 'checked' : ''}} class="star required" type="radio" name="loudness"  value="4" />
+			<input {{@student.loudness == '5' ? 'checked' : ''}} class="star required" type="radio" name="loudness"  value="5" />
+			</td>
+			<td> (Very loud)</td>
+			</tr>
+	
+			<tr><td>How energetic do you like your exercise music?</td><td> (Not very energetic) </td>
+			<td>
+			<input {{@student.energy == '1' ? 'checked' : ''}} class="star required" type="radio" name="energy"  value="1" />
+			<input {{@student.energy == '2' ? 'checked' : ''}} class="star required" type="radio" name="energy"  value="2" />
+			<input {{@student.energy == '3' ? 'checked' : ''}} class="star required" type="radio" name="energy"  value="3" />
+			<input {{@student.energy == '4' ? 'checked' : ''}} class="star required" type="radio" name="energy"  value="4" />
+			<input {{@student.energy == '5' ? 'checked' : ''}} class="star required" type="radio" name="energy"  value="5" />
+			</td>
+			<td> (Very energetic)</td>
+			</tr>
+		
+			<tr><td>How happy do you like your exercise music to be?</td><td> (Sad, Depressed, Angry) </td>
+			<td>
+			<input {{@student.happiness == '1' ? 'checked' : ''}} class="star required" type="radio" name="happiness"  value="1" />
+			<input {{@student.happiness == '2' ? 'checked' : ''}} class="star required" type="radio" name="happiness"  value="2" />
+			<input {{@student.happiness == '3' ? 'checked' : ''}} class="star required" type="radio" name="happiness"  value="3" />
+			<input {{@student.happiness == '4' ? 'checked' : ''}} class="star required" type="radio" name="happiness"  value="4" />
+			<input {{@student.happiness == '5' ? 'checked' : ''}} class="star required" type="radio" name="happiness"  value="5" />
+			</td>
+			<td> (Happy, Peaceful, Joyful)</td>
+			</tr>
+		
+			<tr><td>How fast do you like your exercise music?</td><td> (Very slow) </td>
+			<td>
+			<input {{@student.speed == '1' ? 'checked' : ''}} class="star required" type="radio" name="speed"  value="1" />
+			<input {{@student.speed == '2' ? 'checked' : ''}} class="star required" type="radio" name="speed"  value="2" />
+			<input {{@student.speed == '3' ? 'checked' : ''}} class="star required" type="radio" name="speed"  value="3" />
+			<input {{@student.speed == '4' ? 'checked' : ''}} class="star required" type="radio" name="speed"  value="4" />
+			<input {{@student.speed == '5' ? 'checked' : ''}} class="star required" type="radio" name="speed"  value="5" />
+			</td>
+			<td> (Very fast)</td>
+			</tr>
+		
+			<tr><td>How familiar do you like your exercise music to be?</td><td> (New music) </td>
+			<td>
+			<input {{@student.familiar == '1' ? 'checked' : ''}} class="star required" type="radio" name="familiar"  value="1" />
+			<input {{@student.familiar == '2' ? 'checked' : ''}} class="star required" type="radio" name="familiar"  value="2" />
+			<input {{@student.familiar == '3' ? 'checked' : ''}} class="star required" type="radio" name="familiar"  value="3" />
+			<input {{@student.familiar == '4' ? 'checked' : ''}} class="star required" type="radio" name="familiar"  value="4" />
+			<input {{@student.familiar == '5' ? 'checked' : ''}} class="star required" type="radio" name="familiar"  value="5" />
+			</td>
+			<td> (Music you are very familiar with)</td>
+			</tr>
+			
+			<tr><td width="40%">How prominent do you prefer the rhythm in your exercise music to be?</td><td> (Not very prominent) </td>
+			<td>
+			<input {{@student.beatstrength == '1' ? 'checked' : ''}} class="star required" type="radio" name="beatstrength"  value="1" />
+			<input {{@student.beatstrength == '2' ? 'checked' : ''}} class="star required" type="radio" name="beatstrength"  value="2" />
+			<input {{@student.beatstrength == '3' ? 'checked' : ''}} class="star required" type="radio" name="beatstrength"  value="3" />
+			<input {{@student.beatstrength == '4' ? 'checked' : ''}} class="star required" type="radio" name="beatstrength"  value="4" />
+			<input {{@student.beatstrength == '5' ? 'checked' : ''}} class="star required" type="radio" name="beatstrength"  value="5" />
+			</td>
+			<td> (Very prominent)</td>
+			</tr>
+			
+		</table>
+		<br>
+		<!--
+		<label>
+			<span>Language Spoken :</span>
+			<input {{@patient.language == 'English' ? 'checked' : ''}} type="radio" name="language"  value="English" />English
+			<input {{@patient.language == 'Mandarin' ? 'checked' : ''}} type="radio" name="language"  value="Mandarin"/>Mandarin
+			<input {{@patient.language == 'Malay' ? 'checked' : ''}} type="radio" name="language"  value="Malay"/>Malay
+			<input {{@patient.language == 'Tamil' ? 'checked' : ''}} type="radio" name="language"  value="Tamil"/>Tamil
+			<input {{@patient.language == 'Dialects' ? 'checked' : ''}} type="radio" name="language"  value="Dialects">Dialects: <input type="text" name="specify_dialects" placeholder="e.g. Hokkien" class="short-text" value="{{@patient.specify_dialects}}"/>
+			<input {{@patient.language == 'Others' ? 'checked' : ''}} type="radio" name="language"  value="Others">Others: <input type="text" name="specify_others" placeholder="e.g. Vietnamese" class="short-text" value="{{@patient.specify_others}}"/>
+		</label>
+		-->
+    
+<!-- --------------------------------------------------------------------------------------------------- -->	
+	
+    <h2><br>Specific Music Preferences
+    </h2>
+				Please list your favorite songs:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" name="artist" placeholder="Thank You, Hear You Me" class="long-text" value="{{@student.song}}"/>
+				<br>
+				<br>
+				Please list your favorite music artists:
+				<input type="text" name="artist" placeholder="Tom, John" class="long-text" value="{{@student.artist}}"/>
+				<br>
+				<br>
+				Please list your favorite music genres:
+				<input type="text" name="genre" placeholder="pop,classic" class="long-text" value="{{@student.genre}}"/>
+				<!--
+				<br>a) Western Classical : 
+				<input {{@student.MBP_2a == 'Orchestra' ? 'checked' : ''}} type="radio" name="MBP_2a" value="Orchestra" /> Orchestra
+				<input {{@student.MBP_2a == 'Chamber-String' ? 'checked' : ''}} type="radio" name="MBP_2a" value="Chamber-String" /> Chamber-String
+				<input {{@student.MBP_2a == 'Chamber-Wind' ? 'checked' : ''}} type="radio" name="MBP_2a" value="Chamber-Wind" /> Chamber-Wind
+				<input {{@student.MBP_2a == 'Opera' ? 'checked' : ''}} type="radio" name="MBP_2a" value="Opera" /> Opera
+				<input {{@student.MBP_2a == 'Vocal' ? 'checked' : ''}} type="radio" name="MBP_2a" value="Vocal" /> Vocal
+	
+				<br><br>b) English Pop : 
+				<input {{@student.MBP_2b == '20-50' ? 'checked' : ''}} type="radio" name="MBP_2b" value="20-50" /> 20-50
+				<input {{@student.MBP_2b == '60-70' ? 'checked' : ''}} type="radio" name="MBP_2b" value="60-70" /> 60-70
+				<input {{@student.MBP_2b == '80-90' ? 'checked' : ''}} type="radio" name="MBP_2b" value="80-90" /> 80-90
+				<input {{@student.MBP_2b == 'Others' ? 'checked' : ''}} type="radio" name="MBP_2b" value="Others" /> Others : <input type="text" name="specify_MBP_2b" placeholder="Specify" class="middle-text" value="{{@student.specify_MBP_2b}}"/>
+				<br>c) Chinese Pop : 
+				<input {{@student.MBP_2c == 'Vocal' ? 'checked' : ''}} type="radio" name="MBP_2c" value="20-50" /> 20-50
+				<input {{@student.MBP_2c == '60-70' ? 'checked' : ''}} type="radio" name="MBP_2c" value="60-70" /> 60-70
+				<input {{@student.MBP_2c == '80-90' ? 'checked' : ''}} type="radio" name="MBP_2c" value="80-90" /> 80-90
+				<input {{@student.MBP_2c == 'Others' ? 'checked' : ''}} type="radio" name="MBP_2c" value="Others" /> Others : <input type="text" name="specify_MBP_2c" placeholder="Specify" class="middle-text" value="{{@student.specify_MBP_2c}}"/>
+	
+				<br>d) Religious Music. Specify :<input type="text" name="specify_MBP_2d" placeholder="Specify" class="long-text" value="{{@student.specify_MBP_2d}}"/>
+			-->
+			<br><br>
+			
+	
+	
+<!-- --------------------------------------------------------------------------------------------------- -->		
+    <h2></h2>  
+
+    <label>
+        <span>&nbsp;</span> 
+        <span>&nbsp;</span> 
+		<input type="submit" class="button" value="Submit" name="submit" >		
+    </label>  
+	</form> 	
+	</div>
+<div class="container"><p align="center">Copyright &copy; Sound and Music Computing Lab, NUS</p></div>
+</div>
+<!-- Jiakun: Check name-->
+<script language=javascript>
+
+	function submit_check(){
+		var name=$("#name").val();
+		//var loudness=$('input:radio[name="loudness"]:checked').val();
+		//var energy=$('input:radio[name="energy"]:checked').val();
+		//var happiness=$('input:radio[name="happiness"]:checked').val();
+		//var speed=$('input:radio[name="speed"]:checked').val();
+		//var familiar=$('input:radio[name="familiar"]:checked').val();
+		//if(loudness!=null&&energy!=null&&happiness!=null&&speed!=null&&familiar!=null&&name.length > 0){
+		if(name.length > 0){
+		}
+		else{
+			alert("Fields cannot be empty.");
+			document.getElementById("name").focus();
+			return false;
+		}
+		return true;
+	}
+</script>
+
+<F3:include href="common/footer.html" />
